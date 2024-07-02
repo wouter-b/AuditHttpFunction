@@ -1,3 +1,4 @@
+using Audit.Http;
 using AuditHttpFunction;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +11,13 @@ var host = new HostBuilder()
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
         services.AddHttpClient();
-        services.AddScoped<IAuditHttpClient, AuditHttpClient>();
+        services.AddHttpClient<IAuditHttpClient, AuditHttpClient>()
+            .AddAuditHandler(audit =>
+            {
+                audit.IncludeRequestBody();
+                audit.IncludeResponseBody();
+            });
+
         services.AddScoped<IAuditHttpService, AuditHttpService>();
     })
     .Build();

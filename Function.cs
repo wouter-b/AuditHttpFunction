@@ -10,12 +10,11 @@ namespace AuditHttpFunction
         [Function("Function1")]
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "buildings/{buildingId}/posts")] HttpRequest req, string buildingId)
         {
+
             logger.LogInformation("C# HTTP trigger function processed a request.");
 
             var projectId = await GetProjectIdFromDbAsync(buildingId);
-
             var posts = await httpService.GetBuildingPostsAsync(buildingId);
-
             return new OkObjectResult(posts);
         }
 
